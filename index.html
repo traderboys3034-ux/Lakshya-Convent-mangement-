@@ -1,109 +1,198 @@
-<!DOCTYPE html>
+# Creating the complete School Fee Management System
+# I'll create multiple HTML files as requested
+
+import os
+
+output_dir = "/mnt/agents/output/school-fee-management"
+os.makedirs(output_dir, exist_ok=True)
+
+# ============================================
+# 1. index.html - Admin Login
+# ============================================
+index_html = '''<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lakshya Convent School | Rajauli</title>
+    <title>School Fee Manager - Admin Login</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; color: #333; line-height: 1.6; }
-        header { background: #004a99; color: white; padding: 20px; text-align: center; }
-        .tagline { font-style: italic; font-size: 1.2em; color: #ffcc00; }
-        
-        nav { background: #333; color: white; padding: 10px; text-align: center; }
-        nav a { color: white; margin: 0 15px; text-decoration: none; font-weight: bold; }
-
-        .hero { background: #f4f4f4; padding: 50px 20px; text-align: center; border-bottom: 5px solid #004a99; }
-        .container { padding: 20px; max-width: 1100px; margin: auto; }
-        
-        .section-title { color: #004a99; border-bottom: 2px solid #004a99; display: inline-block; margin-bottom: 20px; }
-        
-        .facilities-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .facility-card { background: #e7eff7; padding: 15px; border-radius: 8px; text-align: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
-
-        .fee-form { background: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
-        .fee-form input, .fee-form select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-        
-        footer { background: #004a99; color: white; text-align: center; padding: 20px; margin-top: 40px; }
-        .contact-info { margin-top: 10px; font-size: 0.9em; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 36px;
+        }
+        .login-container h1 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+        .login-container p {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .input-group .input-icon {
+            position: relative;
+        }
+        .input-group .input-icon i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        .input-group .input-icon input {
+            padding-left: 45px;
+        }
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        .error-msg {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
+        .school-name {
+            margin-top: 25px;
+            color: #888;
+            font-size: 13px;
+        }
+        @media (max-width: 480px) {
+            .login-container { padding: 30px 20px; }
+        }
     </style>
 </head>
 <body>
-
-<header>
-    <h1>LAKSHYA CONVENT SCHOOL</h1>
-    <div class="tagline">"The Aim of Life With Playschool"</div>
-    <p>Affiliated to C.B.S.E. Pattern | Rajauli, Nawada</p>
-</header>
-
-<nav>
-    <a href="#home">Home</a>
-    <a href="#about">About Us</a>
-    <a href="#facilities">Facilities</a>
-    <a href="#fee">Fee Portal</a>
-    <a href="#contact">Contact</a>
-</nav>
-
-<section id="home" class="hero">
-    <h2>Welcome to Lakshya Convent School</h2>
-    <p>Providing Quality Education from <b>Play School (P-Nur) to Class VIII</b>.</p>
-    <p>Our mission is to nurture children in a <b>Loving Atmosphere</b> with a goal-oriented approach.</p>
-</section>
-
-<div class="container" id="about">
-    <h2 class="section-title">About Our School</h2>
-    <p><b>Director:</b> Kaushal Kumar Verma</p>
-    <p>Lakshya Convent School is dedicated to the holistic development of every child. We combine modern teaching methods with traditional values. Our co-educational setup ensures a balanced social growth for students.</p>
-</div>
-
-<div class="container" id="facilities">
-    <h2 class="section-title">Our Facilities</h2>
-    <div class="facilities-grid">
-        <div class="facility-card">Weekly Test</div>
-        <div class="facility-card">Play Room</div>
-        <div class="facility-card">Big & Green Playground</div>
-        <div class="facility-card">School Bus</div>
-        <div class="facility-card">CCTV Surveillance</div>
-        <div class="facility-card">Computer Lab</div>
-        <div class="facility-card">Art & Craft Class</div>
-        <div class="facility-card">Music & Dance</div>
-        <div class="facility-card">Well Qualified Teachers</div>
-        <div class="facility-card">Co-Education</div>
-    </div>
-</div>
-
-<div class="container" id="fee">
-    <h2 class="section-title">Student Fee Management Portal</h2>
-    <div class="fee-form">
-        <form>
-            <input type="text" placeholder="Student Name" required>
-            <input type="text" placeholder="Admission Number" required>
-            <select>
-                <option>Select Class</option>
-                <option>P-Nur</option>
-                <option>Nur</option>
-                <option>I - VIII</option>
-            </select>
-            <input type="number" placeholder="Monthly Fee" required>
-            <input type="number" placeholder="Bus Fee (If any)">
-            <input type="date" title="Payment Date">
-            <select>
-                <option>Payment Mode</option>
-                <option>Cash</option>
-                <option>Online</option>
-            </select>
-            <button type="button" style="background:#004a99; color:white; padding:10px 20px; border:none; border-radius:5px; cursor:pointer;">Submit Record</button>
+    <div class="login-container">
+        <div class="logo"><i class="fas fa-graduation-cap"></i></div>
+        <h1>School Fee Manager</h1>
+        <p>Admin Portal</p>
+        
+        <form id="loginForm">
+            <div class="input-group">
+                <label>Email Address</label>
+                <div class="input-icon">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" placeholder="admin@school.com" required>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <div class="input-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-login"><i class="fas fa-sign-in-alt"></i> Login</button>
+            <div class="error-msg" id="errorMsg"><i class="fas fa-exclamation-circle"></i> Invalid credentials!</div>
         </form>
+        
+        <div class="school-name">
+            <i class="fas fa-school"></i> Demo School Management System
+        </div>
     </div>
-</div>
 
-<footer id="contact">
-    <h3>Contact Us</h3>
-    <p>Main Road, Jagjivan Nagar, Rajauli (Near Bombay Readymade)</p>
-    <div class="contact-info">
-        Call: 9934251673, 8271046534 <br>
-        © 2024 Lakshya Convent School - All Rights Reserved
-    </div>
-</footer>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID",
+            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                localStorage.setItem('adminLoggedIn', 'true');
+                localStorage.setItem('adminEmail', email);
+                window.location.href = 'dashboard.html';
+            } catch (error) {
+                document.getElementById('errorMsg').style.display = 'block';
+                setTimeout(() => document.getElementById('errorMsg').style.display = 'none', 3000);
+            }
+        });
+    </script>
 </body>
-</html>
+</html>'''
+
+with open(f"{output_dir}/index.html", "w", encoding="utf-8") as f:
+    f.write(index_html)
+
+print("index.html created successfully!")
