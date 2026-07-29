@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lakshay Convent School - Fee Management System</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 50%, #f8fafc 100%);
+      --bg-surface: rgba(255, 255, 255, 0.75);
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --border-glass: rgba(226, 232, 240, 0.8);
+      --border-highlight: rgba(59, 130, 246, 0.3);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --secondary: #0284c7;
+      
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --warning: #f59e0b;
+      --warning-light: #fffbeb;
+      --danger: #ef4444;
+      --danger-light: #fef2f2;
+      
+      --shadow-sm: 0 2px 8px -2px rgba(37, 99, 235, 0.08);
+      --shadow-md: 0 10px 25px -5px rgba(37, 99, 235, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 20px 35px -10px rgba(37, 99, 235, 0.15), 0 10px 15px -5px rgba(0, 0, 0, 0.04);
+      
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+    }
+
+    html.dark {
+      --bg-gradient: linear-gradient(135deg, #0b1329 0%, #0f172a 50%, #1e293b 100%);
+      --bg-surface: rgba(15, 23, 42, 0.75);
+      --bg-card: rgba(30, 41, 59, 0.85);
+      --border-glass: rgba(255, 255, 255, 0.1);
+      --border-highlight: rgba(96, 165, 250, 0.3);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-light: #64748b;
+      
+      --primary: #3b82f6;
+      --primary-hover: #60a5fa;
+      --primary-light: rgba(59, 130, 246, 0.15);
+      --secondary: #38bdf8;
+      
+      --success-light: rgba(16, 185, 129, 0.15);
+      --warning-light: rgba(245, 158, 11, 0.15);
+      --danger-light: rgba(239, 68, 68, 0.15);
+      
+      --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 20px 35px -10px rgba(0, 0, 0, 0.6);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    /* Glassmorphism Classes */
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .glass-card:hover {
+      border-color: var(--border-highlight);
+    }
+
+    .glass-header {
+      background: var(--bg-surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-glass);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Layout Components */
+    .app-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 1.5rem;
+      flex: 1;
+    }
+
+    /* Header */
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .brand-logo {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    .brand-text h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+
+    .brand-text p {
+      font-size: 0.78rem;
+      color: var(--primary);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-card);
+      padding: 0.35rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-glass);
+      margin-bottom: 1.75rem;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .nav-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.25rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-tab:hover {
+      color: var(--text-main);
+      background: rgba(59, 130, 246, 0.08);
+    }
+
+    .nav-tab.active {
+      color: white;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.25rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: white;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-glass);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(59, 130, 246, 0.08);
+      border-color: var(--border-highlight);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.85rem;
+      font-size: 0.8rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-icon {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border-radius: 50%;
+    }
+
+    /* Dashboard Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100px;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05));
+      pointer-events: none;
+    }
+
+    .stat-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .stat-blue .stat-icon { background: rgba(37, 99, 235, 0.12); color: var(--primary); }
+    .stat-green .stat-icon { background: rgba(16, 185, 129, 0.12); color: var(--success); }
+    .stat-amber .stat-icon { background: rgba(245, 158, 11, 0.12); color: var(--warning); }
+    .stat-purple .stat-icon { background: rgba(139, 92, 246, 0.12); color: #8b5cf6; }
+
+    .stat-info h3 {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1;
+    }
+
+    /* Form Layouts */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-sm);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    select.form-control {
+      cursor: pointer;
+    }
+
+    /* Tables */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+    }
+
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    .custom-table th {
+      padding: 0.9rem 1rem;
+      background: rgba(37, 99, 235, 0.06);
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--border-glass);
+    }
+
+    .custom-table td {
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-glass);
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    .custom-table tbody tr {
+      transition: background 0.15s ease;
+    }
+
+    .custom-table tbody tr:hover {
+      background: rgba(59, 130, 246, 0.04);
+    }
+
+    /* Status Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-paid {
+      background: var(--success-light);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-pending {
+      background: var(--danger-light);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .badge-partial {
+      background: var(--warning-light);
+      color: var(--warning);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* Search & Filter Bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .search-box input {
+      padding-left: 2.5rem;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      max-width: 650px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      transform: scale(0.95) translateY(10px);
+      transition: transform 0.25s ease;
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border-glass);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border-glass);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    /* Toast Notifications */
+    .toast-container {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.9rem 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      color: var(--text-main);
+      font-size: 0.9rem;
+      font-weight: 600;
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes toastIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Printable Receipt Styling */
+    .receipt-paper {
+      background: #ffffff;
+      color: #0f172a;
+      padding: 2.5rem;
+      border-radius: var(--radius-md);
+      border: 1px solid #e2e8f0;
+      max-width: 680px;
+      margin: 0 auto;
+      font-size: 0.9rem;
+    }
+
+    .receipt-header {
+      text-align: center;
+      border-bottom: 2px dashed #cbd5e1;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .receipt-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.6rem;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+    }
+
+    .receipt-header p {
+      color: #475569;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+    }
+
+    .receipt-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .receipt-table {
+      width: 100%;
+      margin: 1.25rem 0;
+      border-collapse: collapse;
+    }
+
+    .receipt-table th {
+      background: #f8fafc;
+      padding: 0.65rem;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+    }
+
+    .receipt-table td {
+      padding: 0.65rem;
+      border: 1px solid #e2e8f0;
+    }
+
+    .receipt-signatures {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 3rem;
+      padding-top: 1rem;
+    }
+
+    .sig-line {
+      border-top: 1px solid #94a3b8;
+      width: 180px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #64748b;
+      padding-top: 0.35rem;
+    }
+
+    /* Print Specific Styles */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .app-container {
+        padding: 1rem;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .nav-tabs {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Utility */
+    .hidden { display: none !important; }
+    .text-right { text-align: right; }
+    .font-mono { font-family: monospace; }
+    .flex-center { display: flex; align-items: center; justify-content: center; }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container no-print"></div>
+
+  <!-- Sticky Glass Header -->
+  <header class="glass-header no-print">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        </div>
+        <div class="brand-text">
+          <h1 id="header-school-name">Lakshay Convent School</h1>
+          <p>Fee Management System</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <span id="live-clock" class="text-muted" style="font-size: 0.82rem; font-weight: 600;"></span>
+        <button id="theme-toggle-btn" class="btn btn-secondary btn-icon" title="Toggle Dark/Light Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-container no-print">
+    
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('dashboard')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-tab" onclick="switchTab('students')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Students
+      </button>
+      <button class="nav-tab" onclick="switchTab('fee-payment')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        Fee Collection
+      </button>
+      <button class="nav-tab" onclick="switchTab('reports')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Reports
+      </button>
+      <button class="nav-tab" onclick="switchTab('settings')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </button>
+    </nav>
+
+    <!-- SECTION: DASHBOARD -->
+    <section id="sec-dashboard" class="tab-content">
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="glass-card stat-card stat-blue">
+          <div class="stat-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="stat-info">
+            <h3>Total Students</h3>
+            <div class="stat-value" id="stat-total-students">0</div>
+          </div>
+        </div>
+
+        <div class="glass-card stat-card stat-green">
+          <div class="stat-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="stat-info">
+            <h3>Total Collected</h3>
+            <div class="stat-value" id="stat-total-collected">₹0</div>
+          </div>
+        </div>
+
+        <div class="glass-card stat-card stat-amber">
+          <div class="stat-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="stat-info">
+            <h3>Pending Fee</h3>
+            <div class="stat-value" id="stat-pending-fee">₹0</div>
+          </div>
+        </div>
+
+        <div class="glass-card stat-card stat-purple">
+          <div class="stat-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="stat-info">
+            <h3>Today's Collection</h3>
+            <div class="stat-value" id="stat-today-collected">₹0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Cards & Recent Transactions -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        <!-- Quick Actions -->
+        <div class="glass-card" style="padding: 1.5rem;">
+          <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Quick Management Actions
+          </h2>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <button class="btn btn-primary" style="justify-content: flex-start;" onclick="openAddStudentModal()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add New Student Record
+            </button>
+            <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="switchTab('fee-payment')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              Collect Monthly Fee
+            </button>
+            <button class="btn btn-secondary" style="justify-content: flex-start;" onclick="exportStudentsCSV()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export Student List (CSV)
+            </button>
+          </div>
+        </div>
+
+        <!-- Recent Collection Log -->
+        <div class="glass-card" style="padding: 1.5rem;">
+          <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between;">
+            <span style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Recent Transactions
+            </span>
+            <button class="btn btn-secondary btn-sm" onclick="switchTab('reports')">View All</button>
+          </h2>
+          <div id="dashboard-recent-transactions" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: STUDENTS -->
+    <section id="sec-students" class="tab-content hidden">
+      <div class="glass-card" style="padding: 1.5rem;">
+        <div class="filter-bar">
+          <div class="search-box">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="student-search-input" class="form-control" placeholder="Search by name, father name, mobile, admission no..." oninput="renderStudentsTable()" />
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <select id="class-filter-select" class="form-control" style="width: auto;" onchange="renderStudentsTable()">
+              <option value="ALL">All Classes</option>
+              <option value="Nursery">Nursery</option>
+              <option value="LKG">LKG</option>
+              <option value="UKG">UKG</option>
+              <option value="Class 1">Class 1</option>
+              <option value="Class 2">Class 2</option>
+              <option value="Class 3">Class 3</option>
+              <option value="Class 4">Class 4</option>
+              <option value="Class 5">Class 5</option>
+              <option value="Class 6">Class 6</option>
+              <option value="Class 7">Class 7</option>
+              <option value="Class 8">Class 8</option>
+            </select>
+
+            <select id="status-filter-select" class="form-control" style="width: auto;" onchange="renderStudentsTable()">
+              <option value="ALL">All Status</option>
+              <option value="PAID">Paid</option>
+              <option value="PENDING">Pending</option>
+            </select>
+
+            <button class="btn btn-primary" onclick="openAddStudentModal()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Student
+            </button>
+          </div>
+        </div>
+
+        <!-- Student Table -->
+        <div class="table-container">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Student Details</th>
+                <th>Father Name</th>
+                <th>Parent Mobile</th>
+                <th>Admission / Roll</th>
+                <th>Class</th>
+                <th>Monthly Fee</th>
+                <th>Fee Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="students-table-body">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: FEE PAYMENT -->
+    <section id="sec-fee-payment" class="tab-content hidden">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem;">
+        
+        <!-- Payment Collection Form -->
+        <div class="glass-card" style="padding: 1.5rem;">
+          <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; color: var(--primary);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Collect Student Fee
+          </h2>
+
+          <form id="fee-payment-form" onsubmit="handleCollectFee(event)">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">Select Student *</label>
+              <select id="pay-student-select" class="form-control" required onchange="onSelectStudentForPayment()">
+                <option value="">-- Choose Student --</option>
+              </select>
+            </div>
+
+            <!-- Student Summary Preview -->
+            <div id="student-fee-preview" class="hidden" style="background: var(--primary-light); padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem; border: 1px solid var(--border-highlight);">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.85rem;">
+                <div><strong>Class:</strong> <span id="pv-class">-</span></div>
+                <div><strong>Monthly Fee:</strong> ₹<span id="pv-monthly">-</span></div>
+                <div><strong>Father Name:</strong> <span id="pv-father">-</span></div>
+                <div><strong>Current Pending:</strong> <span id="pv-pending" class="badge badge-pending">₹0</span></div>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">Select Month(s) to Pay *</label>
+              <div id="months-checkbox-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; background: var(--bg-surface); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-glass); max-height: 180px; overflow-y: auto;">
+                <!-- Months generated via JS -->
+              </div>
+            </div>
+
+            <div class="form-grid" style="margin-bottom: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Base Monthly Total</label>
+                <input type="number" id="pay-base-amount" class="form-control" readonly value="0" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Late Fine (₹)</label>
+                <input type="number" id="pay-late-fine" class="form-control" value="0" min="0" oninput="calculatePaymentTotal()" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Discount (₹)</label>
+                <input type="number" id="pay-discount" class="form-control" value="0" min="0" oninput="calculatePaymentTotal()" />
+              </div>
+            </div>
+
+            <div class="form-grid" style="margin-bottom: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Net Payable Amount (₹)</label>
+                <input type="number" id="pay-net-amount" class="form-control" readonly value="0" style="font-weight: 700; color: var(--primary);" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Amount Paid Now (₹) *</label>
+                <input type="number" id="pay-amount-paid" class="form-control" required min="1" value="0" oninput="calculatePaymentTotal()" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Remaining Balance (₹)</label>
+                <input type="number" id="pay-balance" class="form-control" readonly value="0" style="font-weight: 700; color: var(--danger);" />
+              </div>
+            </div>
+
+            <div class="form-grid" style="margin-bottom: 1.25rem;">
+              <div class="form-group">
+                <label class="form-label">Payment Date *</label>
+                <input type="date" id="pay-date" class="form-control" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Payment Mode *</label>
+                <select id="pay-mode" class="form-control" required>
+                  <option value="Cash">Cash</option>
+                  <option value="UPI">UPI / GPay / PhonePe</option>
+                  <option value="Bank Transfer">Bank Transfer / NEFT</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem;">
+              <button type="submit" class="btn btn-primary" style="flex: 1;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Collect Fee & Save
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Recent Fee Receipts History -->
+        <div class="glass-card" style="padding: 1.5rem;">
+          <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between;">
+            <span>Payment Log & Receipts</span>
+            <button class="btn btn-secondary btn-sm" onclick="exportTransactionsCSV()">Export CSV</button>
+          </h2>
+
+          <div class="table-container">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th>Receipt #</th>
+                  <th>Student</th>
+                  <th>Paid Month</th>
+                  <th>Amount</th>
+                  <th>Mode</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="payment-history-table-body">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: REPORTS -->
+    <section id="sec-reports" class="tab-content hidden">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+        
+        <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+          <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Today's Total Collection</div>
+          <div id="rep-today-total" style="font-family: 'Outfit'; font-size: 2.2rem; font-weight: 700; color: var(--success); margin-top: 0.5rem;">₹0</div>
+        </div>
+
+        <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+          <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Total Year Collection</div>
+          <div id="rep-year-total" style="font-family: 'Outfit'; font-size: 2.2rem; font-weight: 700; color: var(--primary); margin-top: 0.5rem;">₹0</div>
+        </div>
+
+        <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+          <div style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-transform: uppercase;">Total Pending Dues</div>
+          <div id="rep-pending-total" style="font-family: 'Outfit'; font-size: 2.2rem; font-weight: 700; color: var(--danger); margin-top: 0.5rem;">₹0</div>
+        </div>
+
+      </div>
+
+      <div class="glass-card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+          <h2 style="font-size: 1.1rem; font-weight: 700;">Student Fee Defaulters & Pending Dues Report</h2>
+          <button class="btn btn-secondary btn-sm" onclick="window.print()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Print Report
+          </button>
+        </div>
+
+        <div class="table-container">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Class</th>
+                <th>Father Name</th>
+                <th>Parent Mobile</th>
+                <th>Monthly Fee</th>
+                <th>Unpaid Months</th>
+                <th>Total Pending</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="defaulters-table-body">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: SETTINGS -->
+    <section id="sec-settings" class="tab-content hidden">
+      <div style="max-width: 700px; margin: 0 auto;">
+        <div class="glass-card" style="padding: 2rem;">
+          <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            School Profile & ERP Settings
+          </h2>
+
+          <form id="settings-form" onsubmit="handleSaveSettings(event)">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">School Name</label>
+              <input type="text" id="set-school-name" class="form-control" required value="Lakshay Convent School" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">School Address</label>
+              <input type="text" id="set-school-address" class="form-control" value="Main Road, Education Hub, Sector 4, New Delhi" />
+            </div>
+
+            <div class="form-grid" style="margin-bottom: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="text" id="set-school-phone" class="form-control" value="+91 98765 43210" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Affiliation / Reg No</label>
+                <input type="text" id="set-school-reg" class="form-control" value="CBSE AFF / 2026-8890" />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1.5rem;">
+              Save Profile Settings
+            </button>
+          </form>
+
+          <hr style="border: 0; border-top: 1px solid var(--border-glass); margin: 1.5rem 0;" />
+
+          <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">Data Management</h3>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button class="btn btn-secondary" onclick="seedSampleData()">
+              Seed Demo Students
+            </button>
+            <button class="btn btn-danger" onclick="clearAllData()">
+              Clear All System Data
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: ADD / EDIT STUDENT -->
+  <div id="modal-student" class="modal-overlay no-print">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-student-title" style="font-size: 1.15rem; font-weight: 700; color: var(--primary);">Add New Student</h3>
+        <button class="btn btn-secondary btn-icon" onclick="closeModal('modal-student')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="student-form" onsubmit="handleSaveStudent(event)">
+        <div class="modal-body">
+          <input type="hidden" id="stud-id" />
+
+          <div class="form-grid" style="margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Student Name *</label>
+              <input type="text" id="stud-name" class="form-control" required placeholder="Full Name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Father's Name *</label>
+              <input type="text" id="stud-father" class="form-control" required placeholder="Father Name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mother's Name</label>
+              <input type="text" id="stud-mother" class="form-control" placeholder="Mother Name" />
+            </div>
+          </div>
+
+          <div class="form-grid" style="margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Parent Mobile Number *</label>
+              <input type="tel" id="stud-mobile" class="form-control" required pattern="[0-9]{10}" placeholder="10 Digit Mobile" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Admission Number *</label>
+              <input type="text" id="stud-adm" class="form-control" required placeholder="e.g. LCS-2026-01" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Roll Number</label>
+              <input type="text" id="stud-roll" class="form-control" placeholder="e.g. 101" />
+            </div>
+          </div>
+
+          <div class="form-grid" style="margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Class *</label>
+              <select id="stud-class" class="form-control" required>
+                <option value="">-- Select Class --</option>
+                <option value="Nursery">Nursery</option>
+                <option value="LKG">LKG</option>
+                <option value="UKG">UKG</option>
+                <option value="Class 1">Class 1</option>
+                <option value="Class 2">Class 2</option>
+                <option value="Class 3">Class 3</option>
+                <option value="Class 4">Class 4</option>
+                <option value="Class 5">Class 5</option>
+                <option value="Class 6">Class 6</option>
+                <option value="Class 7">Class 7</option>
+                <option value="Class 8">Class 8</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Section</label>
+              <select id="stud-section" class="form-control">
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="C">Section C</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Monthly Fee (₹) *</label>
+              <input type="number" id="stud-fee" class="form-control" required min="1" placeholder="e.g. 1500" />
+            </div>
+          </div>
+
+          <div class="form-grid" style="margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Admission Date</label>
+              <input type="date" id="stud-date" class="form-control" />
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Residential Address</label>
+              <input type="text" id="stud-address" class="form-control" placeholder="Street Address, City" />
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-student')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Student Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: RECEIPT PRINT PREVIEW -->
+  <div id="modal-receipt" class="modal-overlay">
+    <div class="modal-card" style="max-width: 720px;">
+      <div class="modal-header no-print">
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--primary);">Official Fee Receipt</h3>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-primary btn-sm" onclick="window.print()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Print Receipt
+          </button>
+          <button class="btn btn-secondary btn-icon" onclick="closeModal('modal-receipt')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div id="print-area">
+          <div class="receipt-paper">
+            <div class="receipt-header">
+              <h2 id="rcpt-school-name">Lakshay Convent School</h2>
+              <p id="rcpt-school-address">Main Road, Education Hub, Sector 4, New Delhi</p>
+              <p>Phone: <span id="rcpt-school-phone">+91 98765 43210</span> | Reg: <span id="rcpt-school-reg">CBSE AFF / 2026</span></p>
+              <div style="margin-top: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #1e40af; border: 1px inline-block solid #1e40af; padding: 0.2rem 0.6rem; font-size: 0.8rem; background: #eff6ff;">
+                FEE PAYMENT RECEIPT
+              </div>
+            </div>
+
+            <div class="receipt-grid">
+              <div>
+                <p><strong>Receipt No:</strong> <span id="rcpt-no">REC-001</span></p>
+                <p><strong>Student Name:</strong> <span id="rcpt-student-name">-</span></p>
+                <p><strong>Father Name:</strong> <span id="rcpt-father-name">-</span></p>
+                <p><strong>Class & Sec:</strong> <span id="rcpt-class">-</span></p>
+              </div>
+              <div>
+                <p><strong>Date:</strong> <span id="rcpt-date">-</span></p>
+                <p><strong>Admission No:</strong> <span id="rcpt-adm-no">-</span></p>
+                <p><strong>Parent Mobile:</strong> <span id="rcpt-mobile">-</span></p>
+                <p><strong>Payment Mode:</strong> <span id="rcpt-mode">-</span></p>
+              </div>
+            </div>
+
+            <table class="receipt-table">
+              <thead>
+                <tr>
+                  <th>Particulars / Paid Months</th>
+                  <th style="text-align: right;">Amount (₹)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Monthly Tuition Fee (<span id="rcpt-paid-months">-</span>)</td>
+                  <td style="text-align: right;">₹<span id="rcpt-base-amt">0</span></td>
+                </tr>
+                <tr>
+                  <td>Late Fine Charges</td>
+                  <td style="text-align: right;">₹<span id="rcpt-fine">0</span></td>
+                </tr>
+                <tr>
+                  <td>Concession / Discount</td>
+                  <td style="text-align: right;">- ₹<span id="rcpt-discount">0</span></td>
+                </tr>
+                <tr style="font-weight: 700; background: #f8fafc;">
+                  <td>TOTAL AMOUNT PAID</td>
+                  <td style="text-align: right; color: #1e3a8a;">₹<span id="rcpt-total-paid">0</span></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #475569; margin-top: 0.5rem;">
+              <span><strong>Remaining Balance Due:</strong> ₹<span id="rcpt-balance">0</span></span>
+              <span><strong>Status:</strong> <span style="color: #16a34a; font-weight: 700;">PAID & VERIFIED</span></span>
+            </div>
+
+            <div class="receipt-signatures">
+              <div class="sig-line">Parent / Guardian Signature</div>
+              <div class="sig-line">Authorized Collector / Accountant</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // Academic Months Definition (April to March)
+    const ACADEMIC_MONTHS = [
+      "April", "May", "June", "July", "August", "September", 
+      "October", "November", "December", "January", "February", "March"
+    ];
+
+    // LocalStorage Keys
+    const KEY_STUDENTS = 'lcs_students_v2';
+    const KEY_TRANSACTIONS = 'lcs_transactions_v2';
+    const KEY_SETTINGS = 'lcs_settings_v2';
+    const KEY_THEME = 'lcs_theme_v2';
+
+    // State Variables
+    let students = [];
+    let transactions = [];
+    let settings = {
+      schoolName: 'Lakshay Convent School',
+      schoolAddress: 'Main Road, Education Hub, Sector 4, New Delhi',
+      schoolPhone: '+91 98765 43210',
+      schoolReg: 'CBSE AFF / 2026-8890'
+    };
+
+    // Initialize App
+    document.addEventListener('DOMContentLoaded', () => {
+      loadLocalStorageData();
+      initTheme();
+      updateClock();
+      setInterval(updateClock, 1000);
+      
+      // Set Default Dates in Forms
+      const todayStr = new Date().toISOString().split('T')[0];
+      document.getElementById('pay-date').value = todayStr;
+      document.getElementById('stud-date').value = todayStr;
+
+      // Render Dashboard initial view
+      renderDashboard();
+    });
+
+    // Clock
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('live-clock').innerText = now.toLocaleString('en-US', {
+        weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
+    }
+
+    // LocalStorage Load & Save
+    function loadLocalStorageData() {
+      const storedStudents = localStorage.getItem(KEY_STUDENTS);
+      const storedTx = localStorage.getItem(KEY_TRANSACTIONS);
+      const storedSettings = localStorage.getItem(KEY_SETTINGS);
+
+      if (storedStudents) students = JSON.parse(storedStudents);
+      if (storedTx) transactions = JSON.parse(storedTx);
+      if (storedSettings) settings = JSON.parse(storedSettings);
+
+      // If empty, auto seed demo data
+      if (!storedStudents || students.length === 0) {
+        seedSampleData(false);
+      } else {
+        applySettingsUI();
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem(KEY_STUDENTS, JSON.stringify(students));
+      localStorage.setItem(KEY_TRANSACTIONS, JSON.stringify(transactions));
+      localStorage.setItem(KEY_SETTINGS, JSON.stringify(settings));
+    }
+
+    // Seed Sample Data
+    function seedSampleData(showToastMsg = true) {
+      students = [
+        {
+          id: 'STU-1001',
+          name: 'Aarav Sharma',
+          fatherName: 'Rajesh Sharma',
+          motherName: 'Sunita Sharma',
+          mobile: '9876543210',
+          admissionNo: 'LCS-2026-01',
+          rollNo: '101',
+          studentClass: 'Class 5',
+          section: 'A',
+          monthlyFee: 1800,
+          admissionDate: '2026-04-01',
+          address: 'Sector 12, Dwarka',
+          paidMonths: ['April', 'May', 'June']
+        },
+        {
+          id: 'STU-1002',
+          name: 'Ananya Verma',
+          fatherName: 'Vikram Verma',
+          motherName: 'Meenakshi Verma',
+          mobile: '9812345678',
+          admissionNo: 'LCS-2026-02',
+          rollNo: '102',
+          studentClass: 'Class 3',
+          section: 'B',
+          monthlyFee: 1500,
+          admissionDate: '2026-04-02',
+          address: 'Janakpuri, Delhi',
+          paidMonths: ['April']
+        },
+        {
+          id: 'STU-1003',
+          name: 'Rohan Gupta',
+          fatherName: 'Sanjay Gupta',
+          motherName: 'Pooja Gupta',
+          mobile: '9988776655',
+          admissionNo: 'LCS-2026-03',
+          rollNo: '103',
+          studentClass: 'Class 8',
+          section: 'A',
+          monthlyFee: 2200,
+          admissionDate: '2026-04-05',
+          address: 'Rohini Sector 7',
+          paidMonths: ['April', 'May', 'June', 'July']
+        }
+      ];
+
+      transactions = [
+        {
+          id: 'REC-1001',
+          studentId: 'STU-1001',
+          studentName: 'Aarav Sharma',
+          fatherName: 'Rajesh Sharma',
+          studentClass: 'Class 5',
+          admissionNo: 'LCS-2026-01',
+          mobile: '9876543210',
+          paidMonths: ['April', 'May', 'June'],
+          baseAmount: 5400,
+          lateFine: 0,
+          discount: 200,
+          amountPaid: 5200,
+          balance: 0,
+          date: '2026-07-10',
+          mode: 'UPI'
+        }
+      ];
+
+      saveData();
+      applySettingsUI();
+      renderDashboard();
+      if (showToastMsg) showToast('Sample demo data seeded successfully!');
+    }
+
+    function applySettingsUI() {
+      document.getElementById('header-school-name').innerText = settings.schoolName;
+      document.getElementById('set-school-name').value = settings.schoolName;
+      document.getElementById('set-school-address').value = settings.schoolAddress;
+      document.getElementById('set-school-phone').value = settings.schoolPhone;
+      document.getElementById('set-school-reg').value = settings.schoolReg;
+    }
+
+    // Theme Toggle
+    function initTheme() {
+      const savedTheme = localStorage.getItem(KEY_THEME) || 'light';
+      if (savedTheme === 'dark') document.documentElement.classList.add('dark');
+      
+      document.getElementById('theme-toggle-btn').addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        const isDark = document.documentElement.classList.contains('dark');
+        localStorage.setItem(KEY_THEME, isDark ? 'dark' : 'light');
+      });
+    }
+
+    // Tab Navigation
+    function switchTab(tabId) {
+      document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(sec => sec.classList.add('hidden'));
+
+      const activeBtn = Array.from(document.querySelectorAll('.nav-tab')).find(b => b.getAttribute('onclick').includes(tabId));
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const activeSec = document.getElementById(`sec-${tabId}`);
+      if (activeSec) activeSec.classList.remove('hidden');
+
+      // Trigger Renders
+      if (tabId === 'dashboard') renderDashboard();
+      if (tabId === 'students') renderStudentsTable();
+      if (tabId === 'fee-payment') prepareFeePaymentView();
+      if (tabId === 'reports') renderReports();
+    }
+
+    // DASHBOARD RENDER
+    function renderDashboard() {
+      const totalStudents = students.length;
+      let totalCollected = 0;
+      let todayCollected = 0;
+      const todayStr = new Date().toISOString().split('T')[0];
+
+      transactions.forEach(tx => {
+        totalCollected += Number(tx.amountPaid || 0);
+        if (tx.date === todayStr) {
+          todayCollected += Number(tx.amountPaid || 0);
+        }
+      });
+
+      // Calculate Total Pending Fee across all students
+      let totalPending = 0;
+      students.forEach(s => {
+        const unpaidCount = ACADEMIC_MONTHS.length - (s.paidMonths ? s.paidMonths.length : 0);
+        totalPending += unpaidCount * s.monthlyFee;
+      });
+
+      document.getElementById('stat-total-students').innerText = totalStudents;
+      document.getElementById('stat-total-collected').innerText = `₹${totalCollected.toLocaleString('en-IN')}`;
+      document.getElementById('stat-pending-fee').innerText = `₹${totalPending.toLocaleString('en-IN')}`;
+      document.getElementById('stat-today-collected').innerText = `₹${todayCollected.toLocaleString('en-IN')}`;
+
+      // Recent Transactions Container
+      const recentContainer = document.getElementById('dashboard-recent-transactions');
+      if (transactions.length === 0) {
+        recentContainer.innerHTML = `<p class="text-muted" style="font-size:0.85rem;">No recent payment transactions found.</p>`;
+      } else {
+        const recent = [...transactions].reverse().slice(0, 4);
+        recentContainer.innerHTML = recent.map(tx => `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-surface); border-radius: var(--radius-sm); border: 1px solid var(--border-glass);">
+            <div>
+              <div style="font-weight:700; font-size:0.88rem;">${tx.studentName}</div>
+              <div style="font-size:0.78rem; color:var(--text-muted);">${tx.studentClass} • ${tx.paidMonths.join(', ')}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-weight:700; color:var(--success); font-size:0.9rem;">+₹${tx.amountPaid}</div>
+              <div style="font-size:0.75rem; color:var(--text-light);">${tx.date}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // STUDENTS TABLE RENDER
+    function renderStudentsTable() {
+      const search = document.getElementById('student-search-input').value.toLowerCase();
+      const filterClass = document.getElementById('class-filter-select').value;
+      const filterStatus = document.getElementById('status-filter-select').value;
+
+      const tbody = document.getElementById('students-table-body');
+      tbody.innerHTML = '';
+
+      const filtered = students.filter(s => {
+        const matchesSearch = s.name.toLowerCase().includes(search) || 
+                              s.fatherName.toLowerCase().includes(search) ||
+                              s.mobile.includes(search) ||
+                              s.admissionNo.toLowerCase().includes(search);
+
+        const matchesClass = filterClass === 'ALL' || s.studentClass === filterClass;
+        
+        const isPaidAll = (s.paidMonths && s.paidMonths.length >= 4); // basic heuristic for current term
+        const matchesStatus = filterStatus === 'ALL' || 
+                              (filterStatus === 'PAID' && isPaidAll) || 
+                              (filterStatus === 'PENDING' && !isPaidAll);
+
+        return matchesSearch && matchesClass && matchesStatus;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 2rem; color: var(--text-muted);">No student records matched your search filters.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach(s => {
+        const paidCount = s.paidMonths ? s.paidMonths.length : 0;
+        const isFullyPaid = paidCount >= 12;
+        const statusBadge = isFullyPaid ? `<span class="badge badge-paid">Fully Paid</span>` : 
+                            paidCount > 0 ? `<span class="badge badge-partial">${paidCount} M Paid</span>` :
+                            `<span class="badge badge-pending">Fee Pending</span>`;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <div style="font-weight: 700;">${s.name}</div>
+            <div style="font-size:0.78rem; color:var(--text-muted);">Roll: ${s.rollNo || 'N/A'}</div>
+          </td>
+          <td>${s.fatherName}</td>
+          <td>${s.mobile}</td>
+          <td><span class="font-mono">${s.admissionNo}</span></td>
+          <td>${s.studentClass} (${s.section || 'A'})</td>
+          <td>₹${s.monthlyFee}</td>
+          <td>${statusBadge}</td>
+          <td>
+            <div style="display:flex; gap:0.4rem;">
+              <button class="btn btn-secondary btn-sm" onclick="quickCollectFee('${s.id}')" title="Collect Fee">₹</button>
+              <button class="btn btn-secondary btn-sm" onclick="editStudent('${s.id}')" title="Edit">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              </button>
+              <button class="btn btn-danger btn-sm" onclick="deleteStudent('${s.id}')" title="Delete">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // MODAL CONTROL
+    function openAddStudentModal() {
+      document.getElementById('modal-student-title').innerText = 'Add New Student Record';
+      document.getElementById('student-form').reset();
+      document.getElementById('stud-id').value = '';
+      document.getElementById('modal-student').classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    // SAVE STUDENT (Add / Edit)
+    function handleSaveStudent(e) {
+      e.preventDefault();
+
+      const studId = document.getElementById('stud-id').value;
+      const name = document.getElementById('stud-name').value.trim();
+      const fatherName = document.getElementById('stud-father').value.trim();
+      const motherName = document.getElementById('stud-mother').value.trim();
+      const mobile = document.getElementById('stud-mobile').value.trim();
+      const admissionNo = document.getElementById('stud-adm').value.trim();
+      const rollNo = document.getElementById('stud-roll').value.trim();
+      const studentClass = document.getElementById('stud-class').value;
+      const section = document.getElementById('stud-section').value;
+      const monthlyFee = Number(document.getElementById('stud-fee').value);
+      const admissionDate = document.getElementById('stud-date').value;
+      const address = document.getElementById('stud-address').value.trim();
+
+      if (studId) {
+        // Update existing
+        const idx = students.findIndex(s => s.id === studId);
+        if (idx !== -1) {
+          students[idx] = {
+            ...students[idx],
+            name, fatherName, motherName, mobile, admissionNo,
+            rollNo, studentClass, section, monthlyFee, admissionDate, address
+          };
+          showToast('Student details updated successfully!');
+        }
+      } else {
+        // Create new
+        const newStudent = {
+          id: 'STU-' + Date.now().toString().slice(-5),
+          name, fatherName, motherName, mobile, admissionNo,
+          rollNo, studentClass, section, monthlyFee, admissionDate, address,
+          paidMonths: []
+        };
+        students.push(newStudent);
+        showToast('New student registered successfully!');
+      }
+
+      saveData();
+      closeModal('modal-student');
+      renderStudentsTable();
+      renderDashboard();
+    }
+
+    function editStudent(id) {
+      const s = students.find(item => item.id === id);
+      if (!s) return;
+
+      document.getElementById('modal-student-title').innerText = 'Edit Student Details';
+      document.getElementById('stud-id').value = s.id;
+      document.getElementById('stud-name').value = s.name;
+      document.getElementById('stud-father').value = s.fatherName;
+      document.getElementById('stud-mother').value = s.motherName || '';
+      document.getElementById('stud-mobile').value = s.mobile;
+      document.getElementById('stud-adm').value = s.admissionNo;
+      document.getElementById('stud-roll').value = s.rollNo || '';
+      document.getElementById('stud-class').value = s.studentClass;
+      document.getElementById('stud-section').value = s.section || 'A';
+      document.getElementById('stud-fee').value = s.monthlyFee;
+      document.getElementById('stud-date').value = s.admissionDate || '';
+      document.getElementById('stud-address').value = s.address || '';
+
+      document.getElementById('modal-student').classList.add('active');
+    }
+
+    function deleteStudent(id) {
+      if (confirm('Are you sure you want to delete this student record? This action cannot be undone.')) {
+        students = students.filter(s => s.id !== id);
+        saveData();
+        renderStudentsTable();
+        renderDashboard();
+        showToast('Student record deleted.', 'warning');
+      }
+    }
+
+    // FEE PAYMENT LOGIC
+    function prepareFeePaymentView() {
+      const select = document.getElementById('pay-student-select');
+      select.innerHTML = `<option value="">-- Choose Student --</option>`;
+
+      students.forEach(s => {
+        select.innerHTML += `<option value="${s.id}">${s.name} (${s.studentClass}) - Adm: ${s.admissionNo}</option>`;
+      });
+
+      renderPaymentHistoryTable();
+    }
+
+    function quickCollectFee(studentId) {
+      switchTab('fee-payment');
+      document.getElementById('pay-student-select').value = studentId;
+      onSelectStudentForPayment();
+    }
+
+    function onSelectStudentForPayment() {
+      const studentId = document.getElementById('pay-student-select').value;
+      const previewCard = document.getElementById('student-fee-preview');
+      const monthsGrid = document.getElementById('months-checkbox-grid');
+
+      if (!studentId) {
+        previewCard.classList.add('hidden');
+        monthsGrid.innerHTML = '';
+        return;
+      }
+
+      const s = students.find(item => item.id === studentId);
+      if (!s) return;
+
+      previewCard.classList.remove('hidden');
+      document.getElementById('pv-class').innerText = `${s.studentClass} (${s.section || 'A'})`;
+      document.getElementById('pv-monthly').innerText = s.monthlyFee;
+      document.getElementById('pv-father').innerText = s.fatherName;
+
+      // Pending Months Calculation
+      const paidSet = new Set(s.paidMonths || []);
+      const unpaidCount = ACADEMIC_MONTHS.length - paidSet.size;
+      document.getElementById('pv-pending').innerText = `₹${unpaidCount * s.monthlyFee}`;
+
+      // Render Checkboxes for Unpaid Months
+      monthsGrid.innerHTML = ACADEMIC_MONTHS.map(m => {
+        const isPaid = paidSet.has(m);
+        return `
+          <label style="display:flex; align-items:center; gap:0.35rem; font-size:0.82rem; ${isPaid ? 'opacity:0.5; text-decoration:line-through;' : ''}">
+            <input type="checkbox" value="${m}" ${isPaid ? 'disabled checked' : ''} onchange="calculatePaymentTotal()" class="pay-month-cb" />
+            ${m}
+          </label>
+        `;
+      }).join('');
+
+      calculatePaymentTotal();
+    }
+
+    function calculatePaymentTotal() {
+      const studentId = document.getElementById('pay-student-select').value;
+      if (!studentId) return;
+
+      const s = students.find(item => item.id === studentId);
+      if (!s) return;
+
+      const checkedMonths = Array.from(document.querySelectorAll('.pay-month-cb:checked:not([disabled])'));
+      const baseTotal = checkedMonths.length * s.monthlyFee;
+
+      const fine = Number(document.getElementById('pay-late-fine').value || 0);
+      const discount = Number(document.getElementById('pay-discount').value || 0);
+
+      const netPayable = Math.max(0, baseTotal + fine - discount);
+
+      document.getElementById('pay-base-amount').value = baseTotal;
+      document.getElementById('pay-net-amount').value = netPayable;
+      
+      const amountPaidInput = document.getElementById('pay-amount-paid');
+      if (document.activeElement !== amountPaidInput && amountPaidInput.value == 0) {
+        amountPaidInput.value = netPayable;
+      }
+
+      const amountPaid = Number(amountPaidInput.value || 0);
+      const balance = Math.max(0, netPayable - amountPaid);
+      document.getElementById('pay-balance').value = balance;
+    }
+
+    function handleCollectFee(e) {
+      e.preventDefault();
+
+      const studentId = document.getElementById('pay-student-select').value;
+      if (!studentId) return alert('Please select a student.');
+
+      const s = students.find(item => item.id === studentId);
+      const checkedMonths = Array.from(document.querySelectorAll('.pay-month-cb:checked:not([disabled])')).map(cb => cb.value);
+
+      if (checkedMonths.length === 0) {
+        return alert('Please select at least one month to collect fee for.');
+      }
+
+      const baseAmount = Number(document.getElementById('pay-base-amount').value);
+      const lateFine = Number(document.getElementById('pay-late-fine').value);
+      const discount = Number(document.getElementById('pay-discount').value);
+      const amountPaid = Number(document.getElementById('pay-amount-paid').value);
+      const balance = Number(document.getElementById('pay-balance').value);
+      const payDate = document.getElementById('pay-date').value;
+      const payMode = document.getElementById('pay-mode').value;
+
+      // Update Student Paid Months
+      if (!s.paidMonths) s.paidMonths = [];
+      s.paidMonths = Array.from(new Set([...s.paidMonths, ...checkedMonths]));
+
+      // Create Receipt Transaction
+      const receiptNo = 'REC-' + (1000 + transactions.length + 1);
+      const newTx = {
+        id: receiptNo,
+        studentId: s.id,
+        studentName: s.name,
+        fatherName: s.fatherName,
+        studentClass: s.studentClass,
+        admissionNo: s.admissionNo,
+        mobile: s.mobile,
+        paidMonths: checkedMonths,
+        baseAmount,
+        lateFine,
+        discount,
+        amountPaid,
+        balance,
+        date: payDate,
+        mode: payMode
+      };
+
+      transactions.push(newTx);
+      saveData();
+
+      showToast(`Fee Collected Successfully! Receipt #${receiptNo}`);
+
+      // Open Receipt Preview
+      openReceiptModal(newTx);
+
+      // Reset Payment Form
+      document.getElementById('fee-payment-form').reset();
+      document.getElementById('pay-date').value = new Date().toISOString().split('T')[0];
+      onSelectStudentForPayment();
+      renderDashboard();
+    }
+
+    function renderPaymentHistoryTable() {
+      const tbody = document.getElementById('payment-history-table-body');
+      tbody.innerHTML = '';
+
+      if (transactions.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:1.5rem; color:var(--text-muted);">No fee receipts recorded yet.</td></tr>`;
+        return;
+      }
+
+      [...transactions].reverse().forEach(tx => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><span class="font-mono" style="font-weight:700;">${tx.id}</span></td>
+          <td>
+            <div style="font-weight:600;">${tx.studentName}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">${tx.studentClass}</div>
+          </td>
+          <td>${tx.paidMonths.join(', ')}</td>
+          <td style="font-weight:700; color:var(--success);">₹${tx.amountPaid}</td>
+          <td>${tx.mode}</td>
+          <td>
+            <button class="btn btn-secondary btn-sm" onclick="viewReceiptById('${tx.id}')">
+              Print
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function viewReceiptById(txId) {
+      const tx = transactions.find(t => t.id === txId);
+      if (tx) openReceiptModal(tx);
+    }
+
+    function openReceiptModal(tx) {
+      document.getElementById('rcpt-school-name').innerText = settings.schoolName;
+      document.getElementById('rcpt-school-address').innerText = settings.schoolAddress;
+      document.getElementById('rcpt-school-phone').innerText = settings.schoolPhone;
+      document.getElementById('rcpt-school-reg').innerText = settings.schoolReg;
+
+      document.getElementById('rcpt-no').innerText = tx.id;
+      document.getElementById('rcpt-student-name').innerText = tx.studentName;
+      document.getElementById('rcpt-father-name').innerText = tx.fatherName;
+      document.getElementById('rcpt-class').innerText = tx.studentClass;
+      document.getElementById('rcpt-date').innerText = tx.date;
+      document.getElementById('rcpt-adm-no').innerText = tx.admissionNo;
+      document.getElementById('rcpt-mobile').innerText = tx.mobile;
+      document.getElementById('rcpt-mode').innerText = tx.mode;
+
+      document.getElementById('rcpt-paid-months').innerText = tx.paidMonths.join(', ');
+      document.getElementById('rcpt-base-amt').innerText = tx.baseAmount;
+      document.getElementById('rcpt-fine').innerText = tx.lateFine;
+      document.getElementById('rcpt-discount').innerText = tx.discount;
+      document.getElementById('rcpt-total-paid').innerText = tx.amountPaid;
+      document.getElementById('rcpt-balance').innerText = tx.balance;
+
+      document.getElementById('modal-receipt').classList.add('active');
+    }
+
+    // REPORTS RENDER
+    function renderReports() {
+      let todayTotal = 0;
+      let yearTotal = 0;
+      const todayStr = new Date().toISOString().split('T')[0];
+
+      transactions.forEach(t => {
+        yearTotal += Number(t.amountPaid || 0);
+        if (t.date === todayStr) todayTotal += Number(t.amountPaid || 0);
+      });
+
+      let pendingTotal = 0;
+      students.forEach(s => {
+        const unpaidCount = ACADEMIC_MONTHS.length - (s.paidMonths ? s.paidMonths.length : 0);
+        pendingTotal += unpaidCount * s.monthlyFee;
+      });
+
+      document.getElementById('rep-today-total').innerText = `₹${todayTotal.toLocaleString('en-IN')}`;
+      document.getElementById('rep-year-total').innerText = `₹${yearTotal.toLocaleString('en-IN')}`;
+      document.getElementById('rep-pending-total').innerText = `₹${pendingTotal.toLocaleString('en-IN')}`;
+
+      // Defaulters Table
+      const tbody = document.getElementById('defaulters-table-body');
+      tbody.innerHTML = '';
+
+      students.forEach(s => {
+        const paidSet = new Set(s.paidMonths || []);
+        const unpaidMonths = ACADEMIC_MONTHS.filter(m => !paidSet.has(m));
+        if (unpaidMonths.length > 0) {
+          const totalPendingAmt = unpaidMonths.length * s.monthlyFee;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="font-weight:700;">${s.name}</td>
+            <td>${s.studentClass}</td>
+            <td>${s.fatherName}</td>
+            <td>${s.mobile}</td>
+            <td>₹${s.monthlyFee}</td>
+            <td><span style="color:var(--danger); font-size:0.8rem; font-weight:600;">${unpaidMonths.slice(0, 3).join(', ')}${unpaidMonths.length > 3 ? '...' : ''} (${unpaidMonths.length} mos)</span></td>
+            <td style="font-weight:700; color:var(--danger);">₹${totalPendingAmt}</td>
+            <td>
+              <button class="btn btn-secondary btn-sm" onclick="quickCollectFee('${s.id}')">Collect Fee</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        }
+      });
+    }
+
+    // EXPORT FUNCTIONS (CSV)
+    function exportStudentsCSV() {
+      if (students.length === 0) return alert('No students to export.');
+      
+      let csv = 'AdmissionNo,StudentName,FatherName,Class,Mobile,MonthlyFee,PaidMonthsCount\n';
+      students.forEach(s => {
+        csv += `"${s.admissionNo}","${s.name}","${s.fatherName}","${s.studentClass}","${s.mobile}",${s.monthlyFee},${s.paidMonths ? s.paidMonths.length : 0}\n`;
+      });
+
+      downloadCSV(csv, 'Lakshay_Convent_Students.csv');
+    }
+
+    function exportTransactionsCSV() {
+      if (transactions.length === 0) return alert('No payment records to export.');
+
+      let csv = 'ReceiptNo,StudentName,Class,AmountPaid,PaymentMode,Date,PaidMonths\n';
+      transactions.forEach(t => {
+        csv += `"${t.id}","${t.studentName}","${t.studentClass}",${t.amountPaid},"${t.mode}","${t.date}","${t.paidMonths.join(';')}"\n`;
+      });
+
+      downloadCSV(csv, 'Lakshay_Convent_Fee_Report.csv');
+    }
+
+    function downloadCSV(csvContent, filename) {
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // SETTINGS HANDLER
+    function handleSaveSettings(e) {
+      e.preventDefault();
+      settings.schoolName = document.getElementById('set-school-name').value;
+      settings.schoolAddress = document.getElementById('set-school-address').value;
+      settings.schoolPhone = document.getElementById('set-school-phone').value;
+      settings.schoolReg = document.getElementById('set-school-reg').value;
+
+      saveData();
+      applySettingsUI();
+      showToast('School details updated successfully!');
+    }
+
+    function clearAllData() {
+      if (confirm('WARNING: Are you sure you want to delete ALL student and fee records? This cannot be undone.')) {
+        localStorage.clear();
+        students = [];
+        transactions = [];
+        saveData();
+        renderDashboard();
+        showToast('All system data cleared.', 'danger');
+      }
+    }
+
+    // TOAST NOTIFICATIONS
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      
+      const icon = type === 'success' ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>` :
+                   `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+
+      toast.innerHTML = `${icon} <span>${message}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
